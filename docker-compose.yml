@@ -1,0 +1,31 @@
+
+services:
+  db:
+    image: postgres:${SOFTWARE_VERSION_TAG_DB}
+    restart: always
+    container_name: ${NAME_DB}
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - "${PORT_DB}:5432"
+    environment:
+      POSTGRES_DB: ${NAME_DB}
+      POSTGRES_USER: ${USER_DB}
+      POSTGRES_PASSWORD: ${PASS_DB}
+  
+  pgadmin4:
+    image: elestio/pgadmin:${SOFTWARE_VERSION_TAG_PG}
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "${PORT_PG}:8080"
+    volumes:
+      - database:/pgadmin4/servers.json
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${USER_PG}
+      PGADMIN_DEFAULT_PASSWORD: ${PASS_PG}
+      PGADMIN_LISTEN_PORT: 8080
+
+volumes:
+  database:
